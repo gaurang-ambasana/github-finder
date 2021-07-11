@@ -12,6 +12,7 @@ class App extends Component {
   };
 
   searchUsers = (text) => {
+    this.setState({ loading: true });
     axios
       .get(
         `https://api.github.com/search/users?q=${text}
