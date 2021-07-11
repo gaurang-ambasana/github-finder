@@ -8,15 +8,20 @@ class Search extends Component {
 
   static propTypes = {
     onSearch: PropTypes.func.isRequired,
+    onClear: PropTypes.func.isRequired,
+    displayClearButton: PropTypes.bool.isRequired,
   };
 
   render() {
+    const { onSearch, onClear, displayClearButton } = this.props;
+    const { text } = this.state;
+
     return (
       <div>
         <form
           onSubmit={(e) => {
             e.preventDefault();
-            this.props.onSearch(this.state.text);
+            onSearch(text);
             this.setState({ text: "" });
           }}
           className="form"
@@ -24,7 +29,7 @@ class Search extends Component {
           <input
             type="text"
             name="text"
-            value={this.state.text}
+            value={text}
             placeholder="Search here...."
             autoComplete="off"
             onChange={(e) => this.setState({ [e.target.name]: e.target.value })}
@@ -35,6 +40,11 @@ class Search extends Component {
             className="btn btn-dark btn-block"
           />
         </form>
+        {displayClearButton && (
+          <button className="btn btn-light btn-block" onClick={onClear}>
+            Clear
+          </button>
+        )}
       </div>
     );
   }

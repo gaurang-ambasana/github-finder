@@ -14,20 +14,30 @@ class App extends Component {
   searchUsers = (text) => {
     axios
       .get(
-        `https://api.github.com/search/users?q=${text}&client_id=${process.env.MY_GITHUB_CLIENT_ID}&client_secret=${process.env.MY_GITHUB_CLIENT_SECRET}`
+        `https://api.github.com/search/users?q=${text}
+        &client_id=${process.env.MY_GITHUB_CLIENT_ID}
+        &client_secret=${process.env.MY_GITHUB_CLIENT_SECRET}`
       )
       .then((response) => {
         this.setState({ users: response.data.items, loading: false });
       });
   };
 
+  clearUsers = () => this.setState({ users: [], loading: false });
+
   render() {
+    const { users, loading } = this.state;
+
     return (
       <div className="App">
         <Navbar />
         <div className="container">
-          <Search onSearch={this.searchUsers} />
-          <Users loading={this.state.loading} users={this.state.users} />
+          <Search
+            onSearch={this.searchUsers}
+            onClear={this.clearUsers}
+            displayClearButton={Boolean(users.length)}
+          />
+          <Users loading={loading} users={users} />
         </div>
       </div>
     );
