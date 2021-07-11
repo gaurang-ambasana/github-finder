@@ -21,8 +21,13 @@ class Search extends Component {
         <form
           onSubmit={(e) => {
             e.preventDefault();
-            onSearch(text);
-            this.setState({ text: "" });
+
+            if (this.state.text === "") {
+              this.props.onAlert("Search text cannot be empty", "light");
+            } else {
+              onSearch(text);
+              this.setState({ text: "" });
+            }
           }}
           className="form"
         >
