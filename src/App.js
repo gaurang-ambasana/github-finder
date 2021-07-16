@@ -7,10 +7,12 @@ import Users from "./components/users/Users";
 import Search from "./components/users/Search";
 import Alert from "./components/layout/Alert";
 import About from "./components/pages/About";
+import User from "./components/users/User";
 
 class App extends Component {
   state = {
     users: [],
+    user: {},
     loading: false,
     alert: null,
   };
@@ -28,6 +30,19 @@ class App extends Component {
       });
   };
 
+  getUser = (username) => {
+    this.setState({ loading: true, alert: null });
+
+    axios
+      .get(
+        `https://api.github.com/users/${username}?client_id=
+        ${process.env.MY_GITHUB_CLIENT_ID}&client_secret=${process.env.MY_GITHUB_CLIENT_SECRET}`
+      )
+      .then((response) => {
+        this.setState({ loading: false, user: response.data });
+      });
+  };
+
   clearUsers = () => this.setState({ users: [], loading: false, alert: null });
 
   setAlert = (msg, type) => {
@@ -39,7 +54,7 @@ class App extends Component {
   };
 
   render() {
-    const { users, loading, alert } = this.state;
+    const { users, loading, alert, user } = this.state;
 
     return (
       <Router>
@@ -64,6 +79,18 @@ class App extends Component {
                 )}
               />
               <Route exact path="/about" component={About} />
+              <Route
+                exact
+                path="/users/:login"
+                render={(props) => (
+                  <User
+                    {...props}
+                    getUser={this.getUser}
+                    user={user}
+                    loading={loading}
+                  />
+                )}
+              />
             </Switch>
           </div>
         </div>
