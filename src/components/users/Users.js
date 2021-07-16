@@ -8,9 +8,11 @@ const Users = ({ users, loading }) => {
     <Spinner />
   ) : (
     <div style={userStyle}>
-      {users.map((user) => (
-        <UserItem key={user.id} user={user} />
-      ))}
+      {users.length ? (
+        users.map((user) => <UserItem key={user.id} user={user} />)
+      ) : (
+        <p>No users found</p>
+      )}
     </div>
   );
 };
