@@ -8,7 +8,6 @@ import {
   CLEAR_USERS,
   GET_USER,
   GET_REPOS,
-  SET_ALERT,
 } from "../types";
 
 const GithubState = (props) => {
@@ -54,6 +53,23 @@ const GithubState = (props) => {
       });
   };
 
+  const getUserRepos = (username) => {
+    setLoading();
+
+    axios
+      .get(
+        `https://api.github.com/users/${username}/repos?per_page=5&sort=created:asc&
+         client_id=${process.env.MY_GITHUB_CLIENT_ID}&client_secret=
+         ${process.env.MY_GITHUB_CLIENT_SECRET}`
+      )
+      .then((response) => {
+        dispatch({
+          type: GET_REPOS,
+          payload: response.data,
+        });
+      });
+  };
+
   const clearUsers = () => dispatch({ type: CLEAR_USERS });
 
   const setLoading = () => dispatch({ type: SET_LOADING });
@@ -68,6 +84,7 @@ const GithubState = (props) => {
         searchUsers,
         clearUsers,
         getUser,
+        getUserRepos,
       }}
     >
       {props.children}
