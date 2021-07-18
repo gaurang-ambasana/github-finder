@@ -1,31 +1,35 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import PropTypes from "prop-types";
+import GithubContext from "../context/github/githubContext";
 
-const Search = ({ onSearch, onClear, displayClearButton, onAlert }) => {
+const Search = ({ onAlert }) => {
+  const githubContext = useContext(GithubContext);
+
   const [text, setText] = useState("");
+
+  const submitHandler = (e) => {
+    e.preventDefault();
+
+    if (text === "") {
+      onAlert("Search text cannot be empty", "light");
+    } else {
+      githubContext.searchUsers(text);
+      setText("");
+    }
+  };
+
+  const changeHandler = (e) => setText(e.target.value);
 
   return (
     <div>
-      <form
-        onSubmit={(e) => {
-          e.preventDefault();
-
-          if (text === "") {
-            onAlert("Search text cannot be empty", "light");
-          } else {
-            onSearch(text);
-            setText("");
-          }
-        }}
-        className="form"
-      >
+      <form onSubmit={submitHandler} className="form">
         <input
           type="text"
           name="text"
           value={text}
           placeholder="Search here...."
           autoComplete="off"
-          onChange={(e) => setText(e.target.value)}
+          onChange={changeHandler}
         />
         <input
           type="submit"
@@ -33,8 +37,11 @@ const Search = ({ onSearch, onClear, displayClearButton, onAlert }) => {
           className="btn btn-dark btn-block"
         />
       </form>
-      {displayClearButton && (
-        <button className="btn btn-light btn-block" onClick={onClear}>
+      {Boolean(githubContext.users.length) && (
+        <button
+          className="btn btn-light btn-block"
+          onClick={githubContext.clearUsers}
+        >
           Clear
         </button>
       )}
@@ -43,9 +50,7 @@ const Search = ({ onSearch, onClear, displayClearButton, onAlert }) => {
 };
 
 Search.propTypes = {
-  onSearch: PropTypes.func.isRequired,
-  onClear: PropTypes.func.isRequired,
-  displayClearButton: PropTypes.bool.isRequired,
+  setAlert: PropTypes.func.isRequired,
 };
 
 export default Search;
