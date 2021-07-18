@@ -70,9 +70,7 @@ const App = () => {
 
   const showAlert = (msg, type) => {
     setAlert({ msg, type });
-    setTimeout(() => {
-      setAlert(null);
-    }, 5000);
+    setTimeout(() => setAlert(null), 5000);
   };
 
   return (
